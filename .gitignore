@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ML models (large files)
+backend/ml_models/*.pth
+backend/ml_models/*.h5
+backend/ml_models/*.pkl
+
+# Logs
+*.log
+npm-debug.log*
+
+# Supabase
+supabase/.temp/
