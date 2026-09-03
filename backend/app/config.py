@@ -15,8 +15,12 @@ class Settings(BaseSettings):
     # App
     APP_NAME: str = "AgriLink AI"
     APP_VERSION: str = "0.1.0"
-    DEBUG: bool = True
-    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+    ]
     
     # OSRM
     OSRM_BASE_URL: str = "http://router.project-osrm.org"

@@ -97,10 +97,17 @@ def _prophet_forecast(
     future = model.make_future_dataframe(periods=horizon_days)
     forecast = model.predict(future)
     
+    # Compute trend for Prophet forecast
+    tail_forecast = forecast.tail(horizon_days)
+    if len(tail_forecast) >= 2:
+        yhat_first = tail_forecast.iloc[0]["yhat"]
+        yhat_last = tail_forecast.iloc[-1]["yhat"]
+        trend_str = "up" if yhat_last > yhat_first * 1.05 else "down" if yhat_last < yhat_first * 0.95 else "stable"
+    else:
+        trend_str = "stable"
+        
     results = []
-    today = datetime.now().date()
-    
-    for _, row in forecast.tail(horizon_days).iterrows():
+    for _, row in tail_forecast.iterrows():
         pred = max(0, row["yhat"])
         lower = max(0, row["yhat_lower"])
         upper = row["yhat_upper"]
@@ -112,6 +119,7 @@ def _prophet_forecast(
             predicted_demand_kg=round(pred, 1),
             confidence_lower=round(lower, 1),
             confidence_upper=round(upper, 1),
+            trend=trend_str,
         ))
     
     return results

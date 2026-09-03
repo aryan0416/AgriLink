@@ -167,13 +167,6 @@ async def update_profile(
             detail="No fields to update",
         )
     
-    # Convert lat/lng to a GeoJSON point if provided
-    if "latitude" in update_dict and "longitude" in update_dict:
-        lat = update_dict.pop("latitude")
-        lng = update_dict.pop("longitude")
-        # Supabase geography column — store as WKT or GeoJSON
-        # We'll handle this in a future iteration
-    
     sb.table("profiles").update(update_dict).eq("id", user.id).execute()
     
     # Return updated profile

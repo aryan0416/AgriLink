@@ -75,12 +75,18 @@ def _compute_farmer_trust(user_id: str) -> TrustScore:
     else:
         delivery_timeliness = 0
     
-    # Quality average from quality assessments
-    assessments = sb.table("quality_assessments").select("grade").execute()
+    # Quality average from quality assessments of farmer's products
+    farmer_prods = sb.table("products").select("id").eq("seller_id", user_id).execute()
+    prod_ids = [p["id"] for p in (farmer_prods.data or [])]
     grade_scores = {"A": 1.0, "B": 0.7, "C": 0.4}
-    user_assessments = [a for a in (assessments.data or []) if True]  # simplified
-    if user_assessments:
-        quality_avg = sum(grade_scores.get(a.get("grade", "B"), 0.7) for a in user_assessments) / len(user_assessments)
+    
+    if prod_ids:
+        assessments = sb.table("quality_assessments").select("grade").in_("product_id", prod_ids).execute()
+        user_assessments = assessments.data or []
+        if user_assessments:
+            quality_avg = sum(grade_scores.get(a.get("grade", "B"), 0.7) for a in user_assessments) / len(user_assessments)
+        else:
+            quality_avg = 0.7
     else:
         quality_avg = 0.7  # Default
     

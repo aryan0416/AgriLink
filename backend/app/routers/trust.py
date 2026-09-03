@@ -53,13 +53,22 @@ async def recalculate_trust_score(
     
     score = await compute_trust_score(user_id)
     
+    score_data = {
+        "user_id": user_id,
+        "fulfillment_rate": score.fulfillment_rate,
+        "delivery_timeliness": score.delivery_timeliness,
+        "quality_avg": score.quality_avg,
+        "total_transactions": score.total_transactions,
+        "score": score.score,
+    }
+    
     # Upsert
     existing = sb.table("trust_scores").select("id").eq("user_id", user_id).execute()
     
     if existing.data:
-        sb.table("trust_scores").update(score.model_dump()).eq("user_id", user_id).execute()
+        sb.table("trust_scores").update(score_data).eq("user_id", user_id).execute()
     else:
-        sb.table("trust_scores").insert({"user_id": user_id, **score.model_dump()}).execute()
+        sb.table("trust_scores").insert(score_data).execute()
     
     return score
 

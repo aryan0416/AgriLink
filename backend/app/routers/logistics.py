@@ -138,11 +138,20 @@ async def create_shipment(
     if not vehicle.data[0]["available"]:
         raise HTTPException(status_code=400, detail="Vehicle is not available")
     
+    # Determine delivery coordinates from order or buyer profile
+    delivery_lat = order.data[0].get("delivery_lat") or 0
+    delivery_lng = order.data[0].get("delivery_lng") or 0
+    if not (delivery_lat and delivery_lng) and order.data[0].get("buyer_id"):
+        buyer_profile = sb.table("profiles").select("latitude, longitude").eq("id", order.data[0]["buyer_id"]).execute()
+        if buyer_profile.data:
+            delivery_lat = buyer_profile.data[0].get("latitude") or 0
+            delivery_lng = buyer_profile.data[0].get("longitude") or 0
+
     # Optimize route
     route_info = await optimize_route(
         pickup_points=data.pickup_points,
-        delivery_lat=order.data[0].get("delivery_lat", 0),
-        delivery_lng=order.data[0].get("delivery_lng", 0),
+        delivery_lat=delivery_lat,
+        delivery_lng=delivery_lng,
     )
     
     # Calculate cost (simple: ₹15/km)

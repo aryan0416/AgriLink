@@ -54,8 +54,8 @@ async def plan_aggregation(
         products=products,
         target_quantity_kg=data.total_quantity_kg,
         max_distance_km=data.max_distance_km,
-        buyer_lat=None,
-        buyer_lng=None,
+        buyer_lat=data.buyer_lat,
+        buyer_lng=data.buyer_lng,
     )
     
     if plan is None:
@@ -86,6 +86,8 @@ async def execute_aggregation(
     plan_req = AggregationRequest(
         crop_name=crop_name,
         total_quantity_kg=total_quantity_kg,
+        buyer_lat=buyer_lat if buyer_lat else None,
+        buyer_lng=buyer_lng if buyer_lng else None,
     )
     
     plan = await plan_aggregation(plan_req, user)
@@ -110,7 +112,7 @@ async def execute_aggregation(
     
     order = order_result.data[0]
     
-    # Create order items
+    # Create order items and reduce product quantities
     for item in plan:
         sb.table("order_items").insert({
             "order_id": order["id"],
@@ -120,6 +122,17 @@ async def execute_aggregation(
             "farmer_id": item.farmer_id,
             "status": "pending",
         }).execute()
+
+        # Update product inventory
+        prod_res = sb.table("products").select("quantity_kg").eq("id", item.product_id).execute()
+        if prod_res.data:
+            current_qty = prod_res.data[0].get("quantity_kg", 0)
+            new_qty = max(0, current_qty - item.quantity_kg)
+            new_status = "sold" if new_qty <= 0 else "active"
+            sb.table("products").update({
+                "quantity_kg": new_qty,
+                "status": new_status,
+            }).eq("id", item.product_id).execute()
     
     return {
         "order_id": order["id"],

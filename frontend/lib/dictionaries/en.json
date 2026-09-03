@@ -1,0 +1,37 @@
+{
+  "nav": {
+    "home": "Home",
+    "marketplace": "Marketplace",
+    "analytics": "Analytics",
+    "login": "Login",
+    "register": "Register",
+    "how_to_use": "How to Use"
+  },
+  "home": {
+    "title": "AgriLink AI",
+    "subtitle": "Direct Agricultural Marketplace with Intelligent Logistics & Demand Forecasting",
+    "get_started": "Get Started",
+    "features": "Features",
+    "hero_title_1": "Connect the farm directly",
+    "hero_title_2": "to demand.",
+    "hero_title_highlight": "Optimized by AI in between.",
+    "hero_desc": "Empowering Indian farmers and institutional buyers with direct agricultural commerce, Prophet-powered demand forecasting, OSRM route sequencing, and computer vision produce grading.",
+    "start_farmer": "Start as Farmer",
+    "browse_market": "Browse Marketplace",
+    "stat_income": "Farmer Income Uplift",
+    "stat_logistics": "Logistics Cost Drop",
+    "stat_waste": "Waste Reduction"
+  },
+  "how_to_use": {
+    "title": "How to Use AgriLink",
+    "step1_title": "1. Scan & Grade",
+    "step1_desc": "Take a photo of your produce. Our AI will automatically check the quality.",
+    "step2_title": "2. List Produce",
+    "step2_desc": "Set your price based on our AI recommendations.",
+    "step3_title": "3. Get Orders",
+    "step3_desc": "Buyers will place bulk orders. We aggregate small farmers automatically.",
+    "step4_title": "4. Smart Logistics",
+    "step4_desc": "A shared truck will pick up your produce based on an optimized route.",
+    "play_audio": "Play Audio Instructions"
+  }
+}

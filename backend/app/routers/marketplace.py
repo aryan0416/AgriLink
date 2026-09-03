@@ -37,6 +37,8 @@ async def create_listing(
         "shelf_life_days": data.shelf_life_days,
         "district": data.district,
         "state": data.state,
+        "latitude": data.latitude,
+        "longitude": data.longitude,
         "status": "active",
     }
     
@@ -320,6 +322,10 @@ async def update_order_item_status(
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 
 def _product_to_response(product: dict) -> ProductResponse:
+    harvest_date = product.get("harvest_date")
+    if not harvest_date:
+        from datetime import date
+        harvest_date = date.today()
     return ProductResponse(
         id=product["id"],
         seller_id=product.get("seller_id", ""),
@@ -328,7 +334,7 @@ def _product_to_response(product: dict) -> ProductResponse:
         grade=product.get("grade", "B"),
         quantity_kg=product.get("quantity_kg", 0),
         unit_price=product.get("unit_price", 0),
-        harvest_date=product.get("harvest_date", ""),
+        harvest_date=harvest_date,
         shelf_life_days=product.get("shelf_life_days", 7),
         district=product.get("district", ""),
         state=product.get("state", ""),

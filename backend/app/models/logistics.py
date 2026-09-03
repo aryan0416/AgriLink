@@ -97,6 +97,8 @@ class AggregationRequest(BaseModel):
     state: Optional[str] = None
     max_distance_km: float = Field(default=50.0, gt=0)
     grade_requirement: Optional[str] = None
+    buyer_lat: Optional[float] = None
+    buyer_lng: Optional[float] = None
 
 
 class AggregationResult(BaseModel):
